@@ -9,3 +9,10 @@ Centipedes options:
 
 <img width="555" height="409" alt="image" src="https://github.com/user-attachments/assets/3582040a-55b9-4c7e-afaf-3fddd78cbd5c" />
 
+Example of a user algorithm:
+
+<img width="392" height="335" alt="image" src="https://github.com/user-attachments/assets/fb62a5ea-6bb1-4bd2-9ce9-59db99b87ed2" />
+
+How to create component types, chunk types and chunks:
+
+<img width="1274" height="914" alt="image" src="https://github.com/user-attachments/assets/17850aa7-f82f-4a94-abb6-29cd60fc009c" />
