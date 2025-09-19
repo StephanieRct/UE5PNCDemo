@@ -6,7 +6,7 @@
 /// Will apply a gravity vector to the velocity of the chunk.
 /// The gravity vector given to this algorithm must be multiplied by the delta time
 /// </summary>
-struct ApplyGravityOnVelocity : public PNC::ChunkAlgorithm<ApplyGravityOnVelocity>
+struct ApplyGravityOnVelocity : public PNC::Algorithm<ApplyGravityOnVelocity>
 {
     FVector DeltaGravity;
 

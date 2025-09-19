@@ -1,4 +1,5 @@
 #pragma once
+#include "DrawDebugHelpers.h"
 #include "UE5PNC/public/Algorithm.h"
 #include "Components/components.h"
 
@@ -6,21 +7,25 @@
 /// Control the behaviour of centipede.
 /// It will move to random target infinitely
 /// </summary>
-struct CentipedeLogic : public PNC::ChunkAlgorithm<CentipedeLogic>
+struct CentipedeLogic : public PNC::Algorithm<CentipedeLogic>
 {
     UCentipedesPNC* UComponent;
     float DeltaTime;
 
     CoCentipede* Centipede;
+    CoCentipedeBodyNode* CentipedeBodyNode;
     CoVelocity* Velocity;
     CoPosition* Position;
+    CoPositionPrevious* PositionPrevious;
 
     template<typename T>
     bool Requirements(T req) 
     {
         if (!req.Component(Centipede)) return false;
+        if (!req.Component(CentipedeBodyNode)) return false;
         if (!req.Component(Velocity)) return false;
         if (!req.Component(Position)) return false;
+        if (!req.Component(PositionPrevious)) return false;
         return true;
     }
 
@@ -32,6 +37,7 @@ struct CentipedeLogic : public PNC::ChunkAlgorithm<CentipedeLogic>
 
     void Execute(int count)const 
     {
+        //UE_LOG(LogTemp, Warning, TEXT("CentipedeLogic '%llx' nodes: %i"), Centipede, count);
         TRACE_CPUPROFILER_EVENT_SCOPE(TEXT("CentipedeLogic"));
         Centipede->Target.DiagnosticCheckNaN();
         Centipede->Timer -= DeltaTime;
@@ -46,6 +52,7 @@ struct CentipedeLogic : public PNC::ChunkAlgorithm<CentipedeLogic>
         {
             // reached target;
             PickNewTarget();
+            CentipedeBodyNode[0].Displacement = 0;
         }
         else
         {
@@ -53,11 +60,41 @@ struct CentipedeLogic : public PNC::ChunkAlgorithm<CentipedeLogic>
             auto dir = diff / dist;
             rootPosition += moveDistance * dir;
             rootPosition.DiagnosticCheckNaN();
+            CentipedeBodyNode[0].Displacement = moveDistance;
         }
         Centipede->HeadPosition = rootPosition;
         // Move the first node to the new root position.
         Position[0].Position = rootPosition;
         Velocity[0].Velocity = FVector::Zero();
+
+        // Compute each body node displacement
+        auto positionA = PositionPrevious[0].Position;
+        for (int i = 1; i < count; ++i)
+        {
+            auto positionB = PositionPrevious[i].Position;
+            auto towardA = positionA - positionB;
+            auto l = towardA.Length();
+            if (l < 0.001f)
+                CentipedeBodyNode[i].Displacement = 0;
+            else
+            {
+                towardA = towardA / l;
+                auto disp = Position[i].Position - positionB;
+                CentipedeBodyNode[i].Displacement = FVector::DotProduct(disp, towardA);
+                const auto& trf = UComponent->GetOwner()->GetTransform();
+                DrawDebugLine(
+                    UComponent->GetWorld(),
+                    trf.TransformPosition(Position[i].Position),
+                    trf.TransformPosition(Position[i].Position + towardA * CentipedeBodyNode[i].Displacement),
+                    CentipedeBodyNode[i].Displacement >= 0 ? FColor::Blue : FColor::Red,
+                    false, // Not persistent (drawn per frame)
+                    0.f,   // Only for this frame
+                    255,
+                    5.f    // Thickness of 5
+                );
+            }
+            positionA = positionB;
+        }
     }
 
     void PickNewTarget()const
@@ -69,10 +106,12 @@ struct CentipedeLogic : public PNC::ChunkAlgorithm<CentipedeLogic>
         auto bY = FMath::RandBool();
         auto bZ = FMath::RandBool();
         auto min = -UComponent->RandomTargetRange;
+        min.Z = 0;
         min.X = bX ? min.X : pos.X;
         min.Y = bY ? min.Y : pos.Y;
         min.Z = bZ ? min.Z : pos.Z;
         auto max = UComponent->RandomTargetRange;
+        max.Z += UComponent->RandomTargetRange.Z;
         max.X = bX ? pos.X : max.X;
         max.Y = bY ? pos.Y : max.Y;
         max.Z = bZ ? pos.Z : max.Z;

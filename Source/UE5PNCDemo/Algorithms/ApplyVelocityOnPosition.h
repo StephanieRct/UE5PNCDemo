@@ -5,7 +5,7 @@
 /// <summary>
 /// Will apply the velocity on the position with a given delta time.
 /// </summary>
-struct ApplyVelocityOnPosition : public PNC::ChunkAlgorithm<ApplyVelocityOnPosition>
+struct ApplyVelocityOnPosition : public PNC::Algorithm<ApplyVelocityOnPosition>
 {
     float DeltaTime;
 

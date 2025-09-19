@@ -5,7 +5,7 @@
 /// <summary>
 /// Will add drag to the velocity of all nodes in the chunk
 /// </summary>
-struct AddDragToVelocity : public PNC::ChunkAlgorithm<AddDragToVelocity>
+struct AddDragToVelocity : public PNC::Algorithm<AddDragToVelocity>
 {
 public:
     UCentipedesPNC* UComponent;

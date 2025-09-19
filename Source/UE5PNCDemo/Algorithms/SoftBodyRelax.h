@@ -5,7 +5,7 @@
 /// <summary>
 /// Will alter the velocity of each SoftBodyNode so they respect their length constraint.
 /// </summary>
-struct RelaxSoftBody : public PNC::ChunkAlgorithm<RelaxSoftBody>
+struct RelaxSoftBody : public PNC::Algorithm<RelaxSoftBody>
 {
     UCentipedesPNC* UComponent;
     float DeltaTime;
@@ -44,8 +44,11 @@ struct RelaxSoftBody : public PNC::ChunkAlgorithm<RelaxSoftBody>
                 towardPrevious = FVector(-1, 0, 0);
             else
                 towardPrevious.Normalize();
+
+            //auto fixedPosition = currentPosition + offset * towardPrevious;
+            //Velocity[i].Velocity = (fixedPosition - Position[i].Position) / DeltaTime;
             auto force = offset * towardPrevious;
-            Velocity[i].Velocity += force / DeltaTime * UComponent->ForceRatio;
+            Velocity[i].Velocity += force / DeltaTime;
             previousPosition = Position[i].Position + Velocity[i].Velocity * DeltaTime;
         }
     }

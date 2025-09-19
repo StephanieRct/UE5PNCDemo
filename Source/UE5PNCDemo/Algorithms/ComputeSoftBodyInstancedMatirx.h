@@ -5,16 +5,20 @@
 /// <summary>
 /// Will compute the world matrix for each SoftBodyNode in a chunk.
 /// </summary>
-struct ComputeSoftBodyInstancedMatirx : public PNC::ChunkAlgorithm<ComputeSoftBodyInstancedMatirx>
+struct ComputeSoftBodyInstancedMatirx : public PNC::Algorithm<ComputeSoftBodyInstancedMatirx>
 {
     CoPosition* Position;
+    CoRotation* Rotation;
+    CoScale* Scale;
     CoSoftBodyNode* SoftBodyNode;
-    FInstancedStaticMeshInstanceData* InstancedStaticMeshInstanceData;
+    CoFInstancedStaticMeshInstanceData* InstancedStaticMeshInstanceData;
 
     template<typename T>
     bool Requirements(T req) 
     {
         if (!req.Component(Position)) return false;
+        if (!req.Component(Rotation)) return false;
+        if (!req.Component(Scale)) return false;
         if (!req.Component(SoftBodyNode)) return false;
         if (!req.Component(InstancedStaticMeshInstanceData)) return false;
         return true;
@@ -42,7 +46,11 @@ struct ComputeSoftBodyInstancedMatirx : public PNC::ChunkAlgorithm<ComputeSoftBo
             up.Normalize();
             right.Normalize();
             SoftBodyNode[i].Up = up;
-            InstancedStaticMeshInstanceData[i] = FInstancedStaticMeshInstanceData(FMatrix(forward, right, up, currentPosition));
+            auto matrix = FMatrix(forward, right, up, currentPosition);
+            FTransform trf = FTransform(matrix);
+            Rotation[i].Rotation = trf.GetRotation();
+            Scale[i].Scale = trf.GetScale3D();
+            InstancedStaticMeshInstanceData[i].Transform = matrix;
             previousPosition = currentPosition;
         }
     }

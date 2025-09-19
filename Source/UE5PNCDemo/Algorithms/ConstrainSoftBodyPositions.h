@@ -5,7 +5,7 @@
 /// <summary>
 /// Will move the position of each SoftBodyNode in a chunk
 /// </summary>
-struct ConstrainSoftBodyPositions : public PNC::ChunkAlgorithm<ConstrainSoftBodyPositions>
+struct ConstrainSoftBodyPositions : public PNC::Algorithm<ConstrainSoftBodyPositions>
 {
     CoPosition* Position;
     CoSoftBodyNode* SoftBodyNode;
