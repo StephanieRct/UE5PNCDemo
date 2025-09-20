@@ -69,26 +69,22 @@ struct InitCentipedeLegs : public PNC::Algorithm<InitCentipedeLegs>
     int32 NodePerLeg;
     float NodeLength;
     FVector LegScale;
-    PNC::Size_t ParentIndex;
+    FVector LegScale2;
 
     PNC::CoSingleParentOutsideChunk* SingleParentOutsideChunk;
     PNC::CoParentInChunk* ParentInChunk;
-
     CoCentipedeLegNode* CentipedeLegNode;
-
     CoLocalTransform* LocalTransform;
     CoFInstancedStaticMeshInstanceData* InstancedStaticMeshInstanceData;
-    
-    
-
     PNC::Size_t ChunkIndex;
 
-    InitCentipedeLegs(int32 segmentPerCentipede, int32 legPerSegment, int32 nodePerLeg, float nodeLength, FVector legScale)
+    InitCentipedeLegs(int32 segmentPerCentipede, int32 legPerSegment, int32 nodePerLeg, float nodeLength, FVector legScale, FVector legScale2)
         : SegmentPerCentipede(segmentPerCentipede)
         , LegPerSegment(legPerSegment)
         , NodePerLeg(nodePerLeg)
         , NodeLength(nodeLength)
         , LegScale(legScale)
+        , LegScale2(legScale2)
     {
     }
 
@@ -116,13 +112,11 @@ struct InitCentipedeLegs : public PNC::Algorithm<InitCentipedeLegs>
         int32 iRootR = NodePerLeg;
         int32 iRootStep = NodePerLeg * 2;
         {
-            FVector positionLegRootL = FVector(-100 + 0.5f * step, -100, -100);
-            FVector positionLegRootR = FVector(-100 + 0.5f * step, 100, -100);
+            FVector positionLegRootL = FVector(-100 + 0.5f * step, -100, -75);
+            FVector positionLegRootR = FVector(-100 + 0.5f * step, 100, -75);
             FVector positionLegRootStep = FVector(step, 0, 0);
             for (int32 iLeg = 0; iLeg < LegPerSegment; ++iLeg)
             {
-                //CentipedeLegNode[iRootL].SegmentIndex = iSeg;
-                //CentipedeLegNode[iRootR].SegmentIndex = iSeg;
                 CentipedeLegNode[iRootL].JointIndex = 0;
                 CentipedeLegNode[iRootR].JointIndex = 0;
                 CentipedeLegNode[iRootL].Chirality = 0;
@@ -139,16 +133,14 @@ struct InitCentipedeLegs : public PNC::Algorithm<InitCentipedeLegs>
                 {
                     auto iL = iRootL + iNode;
                     auto iR = iRootR + iNode;
-                    //CentipedeLegNode[iL].SegmentIndex = iSeg;
-                    //CentipedeLegNode[iR].SegmentIndex = iSeg;
                     CentipedeLegNode[iL].JointIndex = iNode;
                     CentipedeLegNode[iR].JointIndex = iNode;
                     CentipedeLegNode[iL].Chirality = 0;
                     CentipedeLegNode[iR].Chirality = 1;
                     CentipedeLegNode[iL].RotationEulerBase = FVector(0, 0, 0);
                     CentipedeLegNode[iR].RotationEulerBase = FVector(0, 0, 0);
-                    LocalTransform[iL].Value = FTransform(FQuat::Identity, FVector(NodeLength, 0, 0), FVector::One());
-                    LocalTransform[iR].Value = FTransform(FQuat::Identity, FVector(NodeLength, 0, 0), FVector::One());
+                    LocalTransform[iL].Value = FTransform(FQuat::Identity, FVector(NodeLength, 0, 0), LegScale2);
+                    LocalTransform[iR].Value = FTransform(FQuat::Identity, FVector(NodeLength, 0, 0), LegScale2);
                     ParentInChunk[iL].Index = iL - 1;
                     ParentInChunk[iR].Index = iR - 1;
                 }

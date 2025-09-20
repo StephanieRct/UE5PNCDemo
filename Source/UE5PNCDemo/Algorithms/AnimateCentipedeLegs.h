@@ -88,6 +88,32 @@ struct AnimateCentipedeLegs : public PNC::Algorithm<AnimateCentipedeLegs>
                     LocalTransform[i].Value.SetRotation(rot);
                     break;
                 }
+                case 1:
+                {
+                    float tY = 0;
+                    switch (phaseStep)
+                    {
+                    case 0:
+                        tY = 0;
+                        break;
+                    case 1:
+                        tY = phaseLocal;
+                        break;
+                    case 2:
+                        tY = 1 - phaseLocal;
+                        break;
+                    case 3:
+                        tY = 0;
+                        break;
+                    }
+
+                    auto node1YAngle = FMath::Lerp(UComponent->LegNode1YRotationMinMax.X, UComponent->LegNode1YRotationMinMax.Y, tY);
+                    auto angles = legNode.RotationEulerBase + FVector(0, node1YAngle, 0);
+                    auto rot = FQuat::MakeFromEuler(angles);
+                    rot.DiagnosticCheckNaN();
+                    LocalTransform[i].Value.SetRotation(rot);
+                    break;
+                }
             }
 
             //if (phase < 0.25f)

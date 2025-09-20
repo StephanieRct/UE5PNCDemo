@@ -82,7 +82,7 @@ PNC::KChunkTree& UCentipedesPNC::CreateCentipede()
     ConstrainSoftBodyPositions().Run(centipedeChunk);
 
     PNC::KChunkArrayTree& legChunkArray = AddChunkArray(LegChunkType, legNodesPerSegment, segementCount, segementCount, legNodesPerSegment);
-    InitCentipedeLegs(segementCount, LegPerSegment, NodePerLeg, LegNodeLength, LegScale).Run(legChunkArray);
+    InitCentipedeLegs(segementCount, LegPerSegment, NodePerLeg, LegNodeLength, LegScale, LegScale2).Run(legChunkArray);
 
     // attach legs chunk to the centipede body chunk
     centipedeChunk.InsertFirstChild(&legChunkArray);

@@ -50,6 +50,9 @@ public:
     UPROPERTY(EditAnywhere)
     FVector LegScale = FVector(0.4, 0.4, 0.4);
 
+    UPROPERTY(EditAnywhere)
+    FVector LegScale2 = FVector(0.5, 0.5, 0.5);
+    
     // Minimum mass of a centipede.
     UPROPERTY(EditAnywhere)
     FVector2D CentipedeMassRange = FVector2D(1, 50);
@@ -99,9 +102,6 @@ public:
 
     UPROPERTY(EditAnywhere)
     FVector2D LegNode1YRotationMinMax = FVector2D(90, 0);
-
-    UPROPERTY(EditAnywhere)
-    FVector2D LegNode2YRotationMinMax = FVector2D(-90, 0);
 
 private:
 
