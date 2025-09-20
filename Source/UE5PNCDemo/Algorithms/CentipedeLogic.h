@@ -37,7 +37,6 @@ struct CentipedeLogic : public PNC::Algorithm<CentipedeLogic>
 
     void Execute(int count)const 
     {
-        //UE_LOG(LogTemp, Warning, TEXT("CentipedeLogic '%llx' nodes: %i"), Centipede, count);
         TRACE_CPUPROFILER_EVENT_SCOPE(TEXT("CentipedeLogic"));
         Centipede->Target.DiagnosticCheckNaN();
         Centipede->Timer -= DeltaTime;
@@ -99,24 +98,42 @@ struct CentipedeLogic : public PNC::Algorithm<CentipedeLogic>
 
     void PickNewTarget()const
     {
-        Centipede->Speed = FMath::RandRange(UComponent->RandomSpeedRange.X, UComponent->RandomSpeedRange.X + UComponent->RandomSpeedRange.Y);
 
-        auto pos = Centipede->HeadPosition;
-        auto bX = FMath::RandBool();
-        auto bY = FMath::RandBool();
-        auto bZ = FMath::RandBool();
-        auto min = -UComponent->RandomTargetRange;
-        min.Z = 0;
-        min.X = bX ? min.X : pos.X;
-        min.Y = bY ? min.Y : pos.Y;
-        min.Z = bZ ? min.Z : pos.Z;
-        auto max = UComponent->RandomTargetRange;
-        max.Z += UComponent->RandomTargetRange.Z;
-        max.X = bX ? pos.X : max.X;
-        max.Y = bY ? pos.Y : max.Y;
-        max.Z = bZ ? pos.Z : max.Z;
+        auto forward = Position[0].Position - Position[1].Position;
+        if (forward.SquaredLength() < 0.001)
+            forward = FVector(1, 0, 0);
+        else
+            forward.Normalize();
 
-        Centipede->Target = FMath::RandPointInBox(FBox(min, max));
+        int32 maxTry = 16;
+        float d = 0;
+        do
+        {
+            Centipede->Speed = FMath::RandRange(UComponent->RandomSpeedRange.X, UComponent->RandomSpeedRange.X + UComponent->RandomSpeedRange.Y);
+
+            auto pos = Centipede->HeadPosition;
+            auto bX = FMath::RandBool();
+            auto bY = FMath::RandBool();
+            auto bZ = FMath::RandBool();
+            auto min = -UComponent->RandomTargetRange;
+            min.Z = 0;
+            min.X = bX ? min.X : pos.X;
+            min.Y = bY ? min.Y : pos.Y;
+            min.Z = bZ ? min.Z : pos.Z;
+            auto max = UComponent->RandomTargetRange;
+            max.Z += UComponent->RandomTargetRange.Z;
+            max.X = bX ? pos.X : max.X;
+            max.Y = bY ? pos.Y : max.Y;
+            max.Z = bZ ? pos.Z : max.Z;
+            Centipede->Target = FMath::RandPointInBox(FBox(min, max));
+            auto newForward = Centipede->Target - Position[0].Position;
+            if (newForward.SquaredLength() < 0.001)
+                newForward = FVector(1, 0, 0);
+            else
+                newForward.Normalize();
+            d = FVector::DotProduct(forward, newForward);
+        } while (d < -0.5f && maxTry-- > 0);
+
         Centipede->Timer = FMath::RandRange(UComponent->RandomRetargetTime.X, UComponent->RandomRetargetTime.X + UComponent->RandomRetargetTime.Y);
     }
 };
