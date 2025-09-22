@@ -26,7 +26,7 @@ void UCentipedesPNC::BeginPlay()
     const PNC::ComponentType* typeCentipede = AddComponentType<CoCentipede>();
     const PNC::ComponentType* typeCentipedeBodyNode = AddComponentType<CoCentipedeBodyNode>();
     
-    CentipedeChunkType = AddChunkType({
+    CentipedeBodyChunkStructure = AddChunkStructure({
         typePosition,
         typePositionPrevious,
         typeRotation,
@@ -44,7 +44,7 @@ void UCentipedesPNC::BeginPlay()
     const PNC::ComponentType* typeSingleParentOutsideChunk = AddComponentType<PNC::CoSingleParentOutsideChunk>();
     const PNC::ComponentType* typeCoParentInChunk = AddComponentType<PNC::CoParentInChunk>();
 
-    LegChunkType = AddChunkType({
+    LegChunkStructure = AddChunkStructure({
         typeSingleParentOutsideChunk,
         typeCoParentInChunk,
         typePosition,
@@ -65,7 +65,7 @@ void UCentipedesPNC::BeginPlay()
 PNC::KChunkTree& UCentipedesPNC::CreateCentipede()
 {
     auto segementCount = FMath::RandRange(CentipedeSegmentsMin, CentipedeSegmentsMin + CentipedeSegmentsRange);
-    PNC::KChunkTree& centipedeChunk = AddChunk(CentipedeChunkType, segementCount, segementCount);
+    PNC::KChunkTree& centipedeChunk = AddChunk(CentipedeBodyChunkStructure, segementCount, segementCount);
     ChunksCentipede.Add(centipedeChunk);
 
     uint32 legNodesPerSegment = LegPerSegment * NodePerLeg * 2; // * 2 for left and right legs;
@@ -81,7 +81,7 @@ PNC::KChunkTree& UCentipedesPNC::CreateCentipede()
     // make sure all segment of the centipede are together at the correct length
     ConstrainSoftBodyPositions().Run(centipedeChunk);
 
-    PNC::KChunkArrayTree& legChunkArray = AddChunkArray(LegChunkType, legNodesPerSegment, segementCount, segementCount, legNodesPerSegment);
+    PNC::KChunkArrayTree& legChunkArray = AddChunkArray(LegChunkStructure, legNodesPerSegment, segementCount, segementCount, legNodesPerSegment);
     InitCentipedeLegs(segementCount, LegPerSegment, NodePerLeg, LegNodeLength, LegScale, LegScale2).Run(legChunkArray);
 
     // attach legs chunk to the centipede body chunk

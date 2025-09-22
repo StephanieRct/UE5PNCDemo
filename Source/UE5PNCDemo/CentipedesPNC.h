@@ -105,17 +105,11 @@ public:
 
 private:
 
-    // ChunkType for our centipede nodes.
-    const PNC::ChunkType* CentipedeChunkType;
-
-    const PNC::ChunkType* LegChunkTypeOld;
-    const PNC::ChunkType* LegChunkType;
-
     // Keep an array of all our component types
     TArray<TUniquePtr<PNC::ComponentType>> ComponentTypes;
-    
-    // Keep an array of all our chunk types
-    TArray<TUniquePtr<PNC::ChunkType>> ChunkTypes;
+
+    // Keep an array of all our chunk structures
+    TArray<TUniquePtr<PNC::ChunkStructure>> ChunkStructures;
 
     // Keep an array of all our chunks
     TArray<TUniquePtr<PNC::KChunkTree>> Chunks;
@@ -126,6 +120,13 @@ private:
     // Keep an array of pointers to all our centipede chunks
     TArray<std::reference_wrapper<PNC::KChunkTree>> ChunksCentipede;
     
+
+    // ChunkStructure for our centipede body nodes.
+    const PNC::ChunkStructure* CentipedeBodyChunkStructure;
+
+    // ChunkStructure for our centipede legs nodes.
+    const PNC::ChunkStructure* LegChunkStructure;
+
     // Pipeline executed on all centipede chunks during TickComponent
     CentipedePipeline* TickPipeline;
     
@@ -143,22 +144,22 @@ public:
         return ComponentTypes[ComponentTypes.Add(MakeUnique<PNC::ComponentType>((T*)nullptr, T::Owner))].Get();
     }
 
-    // Add a chunk type from a list of component type
-    const PNC::ChunkType* AddChunkType(const std::initializer_list<const PNC::ComponentType*>& aComponents) 
+    // Add a chunk structure from a list of component type
+    const PNC::ChunkStructure* AddChunkStructure(const std::initializer_list<const PNC::ComponentType*>& aComponents) 
     {
-        return ChunkTypes[ChunkTypes.Add(MakeUnique<PNC::ChunkType>(aComponents))].Get();
+        return ChunkStructures[ChunkStructures.Add(MakeUnique<PNC::ChunkStructure>(aComponents))].Get();
     }
 
-    // Add a chunk with a given chunk type and capacity.
-    PNC::KChunkTree& AddChunk(const PNC::ChunkType* chunkType, size_t capacity, size_t size = 0)
+    // Add a chunk with a given chunk structure and capacity.
+    PNC::KChunkTree& AddChunk(const PNC::ChunkStructure* chunkStructure, size_t capacity, size_t size = 0)
     {
-        return *Chunks[Chunks.Add(MakeUnique<PNC::KChunkTree>(chunkType, capacity, size))].Get();
+        return *Chunks[Chunks.Add(MakeUnique<PNC::KChunkTree>(chunkStructure, capacity, size))].Get();
     }
 
-    // Add a chunk with a given chunk type and capacity.
-    PNC::KChunkArrayTree& AddChunkArray(const PNC::ChunkType* chunkType, size_t nodeCapacityPerChunk, size_t chunkCapacity, size_t chunkCount = 0, size_t nodeCountPerChunk = 0)
+    // Add a chunk with a given chunk structure and capacity.
+    PNC::KChunkArrayTree& AddChunkArray(const PNC::ChunkStructure* chunkStructure, size_t nodeCapacityPerChunk, size_t chunkCapacity, size_t chunkCount = 0, size_t nodeCountPerChunk = 0)
     {
-        return *ChunkArrays[ChunkArrays.Add(MakeUnique<PNC::KChunkArrayTree>(chunkType, nodeCapacityPerChunk, chunkCapacity, chunkCount, nodeCountPerChunk))].Get();
+        return *ChunkArrays[ChunkArrays.Add(MakeUnique<PNC::KChunkArrayTree>(chunkStructure, nodeCapacityPerChunk, chunkCapacity, chunkCount, nodeCountPerChunk))].Get();
     }
     // Create a centipede chunk.
     PNC::KChunkTree& CreateCentipede();
