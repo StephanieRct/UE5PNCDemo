@@ -3,6 +3,10 @@ Demo of UE5PNC from https://github.com/StephanieRct/UE5PNC
 
 It will create multiple "centipedes" as sequences of soft body nodes.
 
+[![](https://img.youtube.com/vi/2_2SYdp8bsg/0.jpg)](https://www.youtube.com/watch?v=2_2SYdp8bsg)
+
+Worm example:
+
 <img width="1397" height="706" alt="image" src="https://github.com/user-attachments/assets/c5129d55-2973-4ce7-bbfc-e0be3269b6d4" />
 
 Centipedes options:
