@@ -5,9 +5,10 @@ It will create multiple "centipedes" as sequences of soft body nodes.
 
 [![](https://img.youtube.com/vi/2_2SYdp8bsg/0.jpg)](https://www.youtube.com/watch?v=2_2SYdp8bsg)
 
-Worm example:
-
-<img width="1397" height="706" alt="image" src="https://github.com/user-attachments/assets/c5129d55-2973-4ce7-bbfc-e0be3269b6d4" />
+Insight trace shows 2 sets of 512 centipedes processed in a single thread:
+* first one at t.6ms processes a total of 20,480 nodes (cubes);
+* and second one at 10ms processes a total of 40,960 nodes (cubes).
+<img width="1137" height="321" alt="image" src="https://github.com/user-attachments/assets/7023acfd-a14e-45bc-a0c9-d418928a636c" />
 
 Centipedes options:
 
@@ -20,3 +21,6 @@ Example of a user algorithm:
 How to create component types, chunk types and chunks:
 
 <img width="1274" height="914" alt="image" src="https://github.com/user-attachments/assets/17850aa7-f82f-4a94-abb6-29cd60fc009c" />
+
+
+
