@@ -8,7 +8,11 @@ It will create multiple "centipedes" as sequences of soft body nodes.
 Insight trace shows 2 sets of 512 centipedes processed in a single thread:
 * first one at t.6ms processes a total of 20,480 nodes (cubes);
 * and second one at 10ms processes a total of 40,960 nodes (cubes).
-<img width="1137" height="321" alt="image" src="https://github.com/user-attachments/assets/7023acfd-a14e-45bc-a0c9-d418928a636c" />
+<img width="1137" height="321" src="https://github.com/user-attachments/assets/7023acfd-a14e-45bc-a0c9-d418928a636c" />
+
+Captured on Intel Core i9-7940X CPU:
+
+<img width="450" alt="Intel Core i9-7940X" src="https://github.com/user-attachments/assets/3ee10e9b-edfe-4e34-84d9-d259f22330a6" />
 
 Centipedes options:
 
