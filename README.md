@@ -1,3 +1,6 @@
+# Clone
+Clone with submodules: `git clone --recursive https://github.com/StephanieRct/UE5PNCDemo.git UE5PNCDemo`
+
 # UE5PNCDemo
 Demo of UE5PNC from https://github.com/StephanieRct/UE5PNC
 
