@@ -5,7 +5,7 @@
 /// <summary>
 /// Will compute the world matrix for each SoftBodyNode in a chunk.
 /// </summary>
-struct ComputeSoftBodyInstancedMatirx : public PNC::Algorithm<ComputeSoftBodyInstancedMatirx>
+struct ComputeSoftBodyInstancedMatirx : public Ni::Algorithm<ComputeSoftBodyInstancedMatirx>
 {
     CoPosition* Position;
     CoRotation* Rotation;
@@ -26,7 +26,7 @@ struct ComputeSoftBodyInstancedMatirx : public PNC::Algorithm<ComputeSoftBodyIns
 
     void Execute(int count)const 
     {
-        TRACE_CPUPROFILER_EVENT_SCOPE(TEXT("ComputeSoftBodyInstancedMatirx"));
+        ALGO_PROFILE(TEXT("ComputeSoftBodyInstancedMatirx"));
         FVector previousPosition;
         for (int i = 0; i < count; ++i)
         {

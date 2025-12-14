@@ -5,7 +5,7 @@
 /// <summary>
 /// Will move the position of each SoftBodyNode in a chunk
 /// </summary>
-struct ConstrainSoftBodyPositions : public PNC::Algorithm<ConstrainSoftBodyPositions>
+struct ConstrainSoftBodyPositions : public Ni::Algorithm<ConstrainSoftBodyPositions>
 {
     CoPosition* Position;
     CoSoftBodyNode* SoftBodyNode;
@@ -20,7 +20,7 @@ struct ConstrainSoftBodyPositions : public PNC::Algorithm<ConstrainSoftBodyPosit
 
     void Execute(int count)const 
     {
-        TRACE_CPUPROFILER_EVENT_SCOPE(TEXT("ConstrainSoftBodyPositions"));
+        ALGO_PROFILE(TEXT("ConstrainSoftBodyPositions"));
         FVector previousPosition = Position[0].Position;
         const float sectionLenght = 300;
         for (int i = 1; i < count; ++i)

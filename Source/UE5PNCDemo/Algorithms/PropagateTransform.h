@@ -2,7 +2,7 @@
 #include "UE5PNC/public/Algorithm.h"
 #include "Components/components.h"
 
-struct PropagateTransformInChunk : public PNC::Algorithm<PropagateTransformInChunk>
+struct PropagateTransformInChunk : public Ni::Algorithm<PropagateTransformInChunk>
 {
 public:
     FTransform RootTransform;
@@ -11,13 +11,13 @@ public:
     {
 
     }
-    //PropagateTransformInChunk(const FTransform& rootTransform)
-    //    : RootTransform(rootTransform)
-    //{ 
-    //}
+    PropagateTransformInChunk(const FTransform& rootTransform)
+        : RootTransform(rootTransform)
+    { 
+    }
 
 protected:
-    PNC::CoParentInChunk* ParentInChunk;
+    Ni::CoParentInChunk* ParentInChunk;
     CoLocalTransform* LocalTransform;
     CoPosition* Position;
     CoRotation* Rotation;
@@ -39,7 +39,7 @@ public:
 
     void Execute(int count)const 
     {
-        TRACE_CPUPROFILER_EVENT_SCOPE(TEXT("PropagateTransformInChunk"));
+        ALGO_PROFILE(TEXT("PropagateTransformInChunk"));
         for (int i = 0; i < count; ++i)
         {
             auto parentIndex = ParentInChunk[i].Index;
@@ -67,11 +67,11 @@ public:
 };
 
 
-struct PropagateTransformFromParentChunk : public PNC::Algorithm<PropagateTransformFromParentChunk>
+struct PropagateTransformFromParentChunk : public Ni::Algorithm<PropagateTransformFromParentChunk>
 {
 protected:
     PropagateTransformInChunk Base;
-    PNC::CoSingleParentOutsideChunk* SingleParentOutsideChunk;
+    Ni::CoSingleParentOutsideChunk* SingleParentOutsideChunk;
     CoPosition* ParentPosition;
     CoRotation* ParentRotation;
     CoScale* ParentScale;
@@ -90,7 +90,7 @@ public:
 
     void Execute(int count)
     {
-        TRACE_CPUPROFILER_EVENT_SCOPE(TEXT("PropagateTransformInChunk"));
+        ALGO_PROFILE(TEXT("PropagateTransformInChunk"));
         auto parentIndex = SingleParentOutsideChunk->Index;
         Base.RootTransform = FTransform(ParentRotation[parentIndex].Rotation, ParentPosition[parentIndex].Position, ParentScale[parentIndex].Scale);
         Base.Execute(count);
@@ -99,7 +99,7 @@ public:
 };
 
 
-struct CopyPreviousPosition : public PNC::Algorithm<CopyPreviousPosition>
+struct CopyPreviousPosition : public Ni::Algorithm<CopyPreviousPosition>
 {
 protected:
     CoPosition* Position;
@@ -116,7 +116,7 @@ public:
 
     void Execute(int count)const
     {
-        TRACE_CPUPROFILER_EVENT_SCOPE(TEXT("CopyPreviousPosition"));
+        ALGO_PROFILE(TEXT("CopyPreviousPosition"));
         for (int i = 0; i < count; ++i)
             PositionPrevious[i].Position = Position[i].Position;
     }
