@@ -23,7 +23,7 @@ Centipedes options:
 
 Example of a user algorithm:
 
-<img width="392" height="335" alt="image" src="https://github.com/user-attachments/assets/fb62a5ea-6bb1-4bd2-9ce9-59db99b87ed2" />
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/fb62a5ea-6bb1-4bd2-9ce9-59db99b87ed2" />
 
 How to create component types, chunk types and chunks:
 
