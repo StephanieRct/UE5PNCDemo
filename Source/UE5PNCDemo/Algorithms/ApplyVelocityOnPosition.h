@@ -5,7 +5,7 @@
 /// <summary>
 /// Will apply the velocity on the position with a given delta time.
 /// </summary>
-struct ApplyVelocityOnPosition : public PNC::Algorithm<ApplyVelocityOnPosition>
+struct ApplyVelocityOnPosition : public Ni::Algorithm<ApplyVelocityOnPosition>
 {
     float DeltaTime;
 
@@ -27,7 +27,7 @@ struct ApplyVelocityOnPosition : public PNC::Algorithm<ApplyVelocityOnPosition>
 
     void Execute(int count)const 
     {
-        TRACE_CPUPROFILER_EVENT_SCOPE(TEXT("ApplyVelocityOnPosition"));
+        ALGO_PROFILE(TEXT("ApplyVelocityOnPosition"));
         for (int i = 0; i < count; ++i)
         {
             Position[i].Position += Velocity[i].Velocity * DeltaTime;

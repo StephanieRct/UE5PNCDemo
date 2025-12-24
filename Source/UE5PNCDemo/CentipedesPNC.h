@@ -3,7 +3,8 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
-#include "UE5PNC/public/PNCDefault.h"
+#include "UE5PNC/public/Ni.h"
+#include "MyGameSubsystem.h"
 
 #include "CentipedesPNC.generated.h"
 
@@ -21,6 +22,9 @@ public:
     // We will be using an instanced mesh to render each node on screen.
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UInstancedStaticMeshComponent* InstancedMeshComponent;
+
+    UPROPERTY(EditAnywhere)
+    bool bSingleChunk = true;
 
     // Number of centipede chunks to create.
     UPROPERTY(EditAnywhere) 
@@ -103,29 +107,19 @@ public:
     UPROPERTY(EditAnywhere)
     FVector2D LegNode1YRotationMinMax = FVector2D(90, 0);
 
+    UPROPERTY(EditAnywhere)
+    bool bRender = true;
+
 private:
 
-    // Keep an array of all our component types
-    TArray<TUniquePtr<PNC::ComponentType>> ComponentTypes;
-
-    // Keep an array of all our chunk structures
-    TArray<TUniquePtr<PNC::ChunkStructure>> ChunkStructures;
-
-    // Keep an array of all our chunks
-    TArray<TUniquePtr<PNC::KChunkTree>> Chunks;
-
-    // Keep an array of all our chunkarrays
-    TArray<TUniquePtr<PNC::KChunkArrayTree>> ChunkArrays;
-
-    // Keep an array of pointers to all our centipede chunks
-    TArray<std::reference_wrapper<PNC::KChunkTree>> ChunksCentipede;
+    // Keep an array of references to all our centipede chunks
+    TArray<std::reference_wrapper<Ni::KChunkTreePointer>> ChunksCentipede;
     
-
     // ChunkStructure for our centipede body nodes.
-    const PNC::ChunkStructure* CentipedeBodyChunkStructure;
+    const Ni::ChunkStructure* CentipedeBodyChunkStructure;
 
     // ChunkStructure for our centipede legs nodes.
-    const PNC::ChunkStructure* LegChunkStructure;
+    const Ni::ChunkStructure* LegChunkStructure;
 
     // Pipeline executed on all centipede chunks during TickComponent
     CentipedePipeline* TickPipeline;
@@ -133,34 +127,24 @@ private:
 protected:
 	virtual void BeginPlay() override;
 
+    TArray<void*> RandomAllocs;
+
+    UMyGameSubsystem* GetPnc()const
+    {
+        UMyGameSubsystem* pnc = this->GetOwner()->GetGameInstance()->GetSubsystem<UMyGameSubsystem>();
+        if (!pnc)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("null UMyGameSubsystem"));
+        }
+        return pnc;
+    }
 public:	
     ~UCentipedesPNC();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-    // Add a component type we can use for our centipede chunks
-    template<typename T>
-    PNC::ComponentType* AddComponentType() 
-    {
-        return ComponentTypes[ComponentTypes.Add(MakeUnique<PNC::ComponentType>((T*)nullptr, T::Owner))].Get();
-    }
-
-    // Add a chunk structure from a list of component type
-    const PNC::ChunkStructure* AddChunkStructure(const std::initializer_list<const PNC::ComponentType*>& aComponents) 
-    {
-        return ChunkStructures[ChunkStructures.Add(MakeUnique<PNC::ChunkStructure>(aComponents))].Get();
-    }
-
-    // Add a chunk with a given chunk structure and capacity.
-    PNC::KChunkTree& AddChunk(const PNC::ChunkStructure* chunkStructure, size_t capacity, size_t size = 0)
-    {
-        return *Chunks[Chunks.Add(MakeUnique<PNC::KChunkTree>(chunkStructure, capacity, size))].Get();
-    }
-
-    // Add a chunk with a given chunk structure and capacity.
-    PNC::KChunkArrayTree& AddChunkArray(const PNC::ChunkStructure* chunkStructure, size_t nodeCapacityPerChunk, size_t chunkCapacity, size_t chunkCount = 0, size_t nodeCountPerChunk = 0)
-    {
-        return *ChunkArrays[ChunkArrays.Add(MakeUnique<PNC::KChunkArrayTree>(chunkStructure, nodeCapacityPerChunk, chunkCapacity, chunkCount, nodeCountPerChunk))].Get();
-    }
     // Create a centipede chunk.
-    PNC::KChunkTree& CreateCentipede();
+    Ni::KChunkTreePointer& CreateCentipede();
+
+    // Create a centipede chunk.
+    Ni::KChunkTreePointer& CreateCentipedes(Ni::Size_t count);
 };

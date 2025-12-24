@@ -7,19 +7,7 @@
 		{
 			"Name": "UE5PNCDemo",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine"
-			]
-		}
-	],
-	"Plugins": [
-		{
-			"Name": "ModelingToolsEditorMode",
-			"Enabled": true,
-			"TargetAllowList": [
-				"Editor"
-			]
+			"LoadingPhase": "Default"
 		}
 	]
 }

@@ -5,7 +5,7 @@
 /// <summary>
 /// Initialize a centipede chunk
 /// </summary>
-struct InitCentipede : public PNC::Algorithm<InitCentipede>
+struct InitCentipede : public Ni::Algorithm<InitCentipede>
 {
     UCentipedesPNC* UComponent;
 
@@ -38,7 +38,7 @@ struct InitCentipede : public PNC::Algorithm<InitCentipede>
 
     void Execute(int count)const 
     {
-        TRACE_CPUPROFILER_EVENT_SCOPE(TEXT("CreateCentipede"));
+        ALGO_PROFILE(TEXT("CreateCentipede"));
         Centipede->HeadPosition = FMath::RandPointInBox(FBox(-UComponent->RandomTargetRange, UComponent->RandomTargetRange));
         Centipede->HeadPosition.Z += UComponent->RandomTargetRange.Z;
         Centipede->Speed = 1;
@@ -62,7 +62,7 @@ struct InitCentipede : public PNC::Algorithm<InitCentipede>
 };
 
 
-struct InitCentipedeLegs : public PNC::Algorithm<InitCentipedeLegs>
+struct InitCentipedeLegs : public Ni::Algorithm<InitCentipedeLegs>
 {
     int32 SegmentPerCentipede;
     int32 LegPerSegment;
@@ -71,12 +71,12 @@ struct InitCentipedeLegs : public PNC::Algorithm<InitCentipedeLegs>
     FVector LegScale;
     FVector LegScale2;
 
-    PNC::CoSingleParentOutsideChunk* SingleParentOutsideChunk;
-    PNC::CoParentInChunk* ParentInChunk;
+    Ni::CoSingleParentOutsideChunk* SingleParentOutsideChunk;
+    Ni::CoParentInChunk* ParentInChunk;
     CoCentipedeLegNode* CentipedeLegNode;
     CoLocalTransform* LocalTransform;
     CoFInstancedStaticMeshInstanceData* InstancedStaticMeshInstanceData;
-    PNC::Size_t ChunkIndex;
+    Ni::Size_t ChunkIndex;
 
     InitCentipedeLegs(int32 segmentPerCentipede, int32 legPerSegment, int32 nodePerLeg, float nodeLength, FVector legScale, FVector legScale2)
         : SegmentPerCentipede(segmentPerCentipede)
@@ -102,7 +102,7 @@ struct InitCentipedeLegs : public PNC::Algorithm<InitCentipedeLegs>
 
     void Execute(int count)const
     {
-        TRACE_CPUPROFILER_EVENT_SCOPE(TEXT("InitCentipedeLegs"));
+        ALGO_PROFILE(TEXT("InitCentipedeLegs"));
         
         // this chunk's parent node is the chunk index
         SingleParentOutsideChunk->Index = ChunkIndex;

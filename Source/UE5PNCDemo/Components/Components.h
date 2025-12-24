@@ -1,21 +1,33 @@
-// Define a few PNC components we will use with our chunks.
+// Define a few Ni components we will use with our chunks.
 #pragma once
 #include "CoreMinimal.h"
 #include "UE5PNC/public/Components.h"
+#include "ProceduralMeshComponent.h"
+
+//#define ALGO_PROFILE(x) TRACE_CPUPROFILER_EVENT_SCOPE(x)
+#define ALGO_PROFILE(x) 
+#define PNC_PROFILE(x) TRACE_CPUPROFILER_EVENT_SCOPE(x)
+//#define PNC_PROFILE(x) 
+
+using Ni::Size_t;
 
 /// <summary>
 /// Position of a node in world space
 /// </summary>
-struct CoPosition : public PNC::NodeComponent
+struct CoPosition : public Ni::NodeComponent
 {
 public:
     FVector Position;
+    CoPosition()
+    {
+        UE_LOG(LogTemp, Warning, TEXT("CoPosition::Ctor"));
+    }
 };
 
 /// <summary>
 /// Previous frame position of a node in world space
 /// </summary>
-struct CoPositionPrevious : public PNC::NodeComponent
+struct CoPositionPrevious : public Ni::NodeComponent
 {
 public:
     FVector Position;
@@ -23,7 +35,7 @@ public:
 /// <summary>
 /// 3D Rotation of a node in world space
 /// </summary>
-struct CoRotation : public PNC::NodeComponent
+struct CoRotation : public Ni::NodeComponent
 {
 public:
     FQuat Rotation;
@@ -32,13 +44,13 @@ public:
 /// <summary>
 /// 3D Scale of a node in world space
 /// </summary>
-struct CoScale : public PNC::NodeComponent
+struct CoScale : public Ni::NodeComponent
 {
 public:
     FVector Scale;
 };
 
-struct CoLocalTransform : public PNC::NodeComponent
+struct CoLocalTransform : public Ni::NodeComponent
 {
 public:
     FTransform Value;
@@ -49,7 +61,7 @@ public:
 /// <summary>
 /// Velocity of a node in world space
 /// </summary>
-struct CoVelocity : public PNC::NodeComponent
+struct CoVelocity : public Ni::NodeComponent
 {
 public:
     FVector Velocity;
@@ -58,7 +70,7 @@ public:
 /// <summary>
 /// Mass of a node
 /// </summary>
-struct CoMass : public PNC::NodeComponent
+struct CoMass : public Ni::NodeComponent
 {
 public:
     float Mass;
@@ -67,14 +79,14 @@ public:
 /// <summary>
 /// A soft body node will keep a specific distance (Length) from it's previous node.
 /// </summary>
-struct CoSoftBodyNode : public PNC::NodeComponent
+struct CoSoftBodyNode : public Ni::NodeComponent
 {
 public:
     FVector Up;
     float Length;
 };
 
-struct CoCentipedeBodyNode : public PNC::NodeComponent
+struct CoCentipedeBodyNode : public Ni::NodeComponent
 {
 public:
     float Displacement;
@@ -86,7 +98,7 @@ public:
 /// All soft body nodes in the chunk will follow the HeadPosition while the centipede moves
 /// toward its target.
 /// </summary>
-struct CoCentipede : public PNC::ChunkComponent
+struct CoCentipede : public Ni::ChunkComponent
 {
 public:
     FVector HeadPosition;
@@ -95,11 +107,11 @@ public:
     float Timer;
 };
 
-struct CoCentipedeLeg : public PNC::ChunkComponent
+struct CoCentipedeLeg : public Ni::ChunkComponent
 {
 public:
 };
-struct CoCentipedeLegNode : public PNC::NodeComponent
+struct CoCentipedeLegNode : public Ni::NodeComponent
 {
 public:
     /// <summary>
@@ -113,7 +125,9 @@ public:
 };
 
 
-struct CoFInstancedStaticMeshInstanceData : public FInstancedStaticMeshInstanceData, public PNC::NodeComponent
+struct CoFInstancedStaticMeshInstanceData : public FInstancedStaticMeshInstanceData, public Ni::NodeComponent
 {
 
 };
+
+

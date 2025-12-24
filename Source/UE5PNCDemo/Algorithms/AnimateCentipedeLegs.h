@@ -4,12 +4,12 @@
 
 
 
-struct AnimateCentipedeLegs : public PNC::Algorithm<AnimateCentipedeLegs>
+struct AnimateCentipedeLegs : public Ni::Algorithm<AnimateCentipedeLegs>
 {
     UCentipedesPNC* UComponent;
 
-    PNC::CoSingleParentOutsideChunk* SingleParentOutsideChunk;
-    PNC::CoParentInChunk* ParentInChunk;
+    Ni::CoSingleParentOutsideChunk* SingleParentOutsideChunk;
+    Ni::CoParentInChunk* ParentInChunk;
 
     CoLocalTransform* LocalTransform;
 
@@ -34,7 +34,7 @@ struct AnimateCentipedeLegs : public PNC::Algorithm<AnimateCentipedeLegs>
 
     void Execute(int count)const
     {
-        TRACE_CPUPROFILER_EVENT_SCOPE(TEXT("AnimateCentipedeLegs"));
+        ALGO_PROFILE(TEXT("AnimateCentipedeLegs"));
         for (int32 i = 0; i < count; ++i)
         {
             CoCentipedeLegNode& legNode = CentipedeLegNode[i];
@@ -115,54 +115,6 @@ struct AnimateCentipedeLegs : public PNC::Algorithm<AnimateCentipedeLegs>
                     break;
                 }
             }
-
-            //if (phase < 0.25f)
-            //{
-            //    auto phaseLocal = phase / 0.25f;
-            //}
-            //else
-            //{
-            //    auto phaseOut = (phase - 0.5f) / 0.5f;
-            //    //move from back to from
-            //    switch (legNode.JointIndex)
-            //    {
-            //    case 0:
-            //        auto node0ZAngle = FMath::Lerp(UComponent->LegNode0ZRotationMinMax.Y, UComponent->LegNode0ZRotationMinMax.X, phaseOut);
-            //        auto node0YAngle = FMath::Lerp(UComponent->LegNode0YRotationMinMax.Y, UComponent->LegNode0YRotationMinMax.X, phaseOut);
-            //        auto angles = legNode.RotationEulerBase + FVector(0, node0YAngle, node0ZAngle);
-            //        LocalTransform[i].Value.SetRotation(FQuat::MakeFromEuler(angles));
-            //        break;
-            //    }
-            //}
-            //if (phase < 0.5f)
-            //{
-            //    auto phaseIn = phase / 0.5f;
-            //    //move from back to from
-            //    switch (legNode.JointIndex)
-            //    {
-            //    case 0:
-            //        auto node0ZAngle = FMath::Lerp(UComponent->LegNode0ZRotationMinMax.X, UComponent->LegNode0ZRotationMinMax.Y, phaseIn);
-            //        auto node0YAngle = FMath::Lerp(UComponent->LegNode0YRotationMinMax.X, UComponent->LegNode0YRotationMinMax.Y, phaseIn);
-            //        auto angles = legNode.RotationEulerBase + FVector(0, node0YAngle, node0ZAngle);
-            //        LocalTransform[i].Value.SetRotation(FQuat::MakeFromEuler(angles));
-            //        break;
-            //    }
-            //}
-            //else
-            //{
-            //    auto phaseOut = (phase - 0.5f) / 0.5f;
-            //    //move from back to from
-            //    switch (legNode.JointIndex)
-            //    {
-            //    case 0:
-            //        auto node0ZAngle = FMath::Lerp(UComponent->LegNode0ZRotationMinMax.Y, UComponent->LegNode0ZRotationMinMax.X, phaseOut);
-            //        auto node0YAngle = FMath::Lerp(UComponent->LegNode0YRotationMinMax.Y, UComponent->LegNode0YRotationMinMax.X, phaseOut);
-            //        auto angles = legNode.RotationEulerBase + FVector(0, node0YAngle, node0ZAngle);
-            //        LocalTransform[i].Value.SetRotation(FQuat::MakeFromEuler(angles));
-            //        break;
-            //    }
-            //}
-            //ParentVelocity[leg.]
         }
     }
 };
