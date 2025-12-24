@@ -7,7 +7,7 @@
 /// Control the behaviour of centipede.
 /// It will move to random target infinitely
 /// </summary>
-struct CentipedeLogic : public PNC::Algorithm<CentipedeLogic>
+struct CentipedeLogic : public Ni::Algorithm<CentipedeLogic>
 {
     UCentipedesPNC* UComponent;
     float DeltaTime;
@@ -35,10 +35,9 @@ struct CentipedeLogic : public PNC::Algorithm<CentipedeLogic>
     {
     }
 
-    void Execute(int count)const 
+    void Execute(const Size_t count)const 
     {
-        TRACE_CPUPROFILER_EVENT_SCOPE(TEXT("CentipedeLogic"));
-        Centipede->Target.DiagnosticCheckNaN();
+        ALGO_PROFILE(TEXT("CentipedeLogic"));
         Centipede->Timer -= DeltaTime;
         if (Centipede->Timer < 0)
             PickNewTarget();
@@ -58,7 +57,6 @@ struct CentipedeLogic : public PNC::Algorithm<CentipedeLogic>
             //move
             auto dir = diff / dist;
             rootPosition += moveDistance * dir;
-            rootPosition.DiagnosticCheckNaN();
             CentipedeBodyNode[0].Displacement = moveDistance;
         }
         Centipede->HeadPosition = rootPosition;
@@ -80,17 +78,17 @@ struct CentipedeLogic : public PNC::Algorithm<CentipedeLogic>
                 towardA = towardA / l;
                 auto disp = Position[i].Position - positionB;
                 CentipedeBodyNode[i].Displacement = FVector::DotProduct(disp, towardA);
-                const auto& trf = UComponent->GetOwner()->GetTransform();
-                DrawDebugLine(
-                    UComponent->GetWorld(),
-                    trf.TransformPosition(Position[i].Position),
-                    trf.TransformPosition(Position[i].Position + towardA * CentipedeBodyNode[i].Displacement),
-                    CentipedeBodyNode[i].Displacement >= 0 ? FColor::Blue : FColor::Red,
-                    false, // Not persistent (drawn per frame)
-                    0.f,   // Only for this frame
-                    255,
-                    5.f    // Thickness of 5
-                );
+                //const auto& trf = UComponent->GetOwner()->GetTransform();
+                //DrawDebugLine(
+                //    UComponent->GetWorld(),
+                //    trf.TransformPosition(Position[i].Position),
+                //    trf.TransformPosition(Position[i].Position + towardA * CentipedeBodyNode[i].Displacement),
+                //    CentipedeBodyNode[i].Displacement >= 0 ? FColor::Blue : FColor::Red,
+                //    false, // Not persistent (drawn per frame)
+                //    0.f,   // Only for this frame
+                //    255,
+                //    5.f    // Thickness of 5
+                //);
             }
             positionA = positionB;
         }

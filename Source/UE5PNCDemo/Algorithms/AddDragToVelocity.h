@@ -5,7 +5,7 @@
 /// <summary>
 /// Will add drag to the velocity of all nodes in the chunk
 /// </summary>
-struct AddDragToVelocity : public PNC::Algorithm<AddDragToVelocity>
+struct AddDragToVelocity : public Ni::Algorithm<AddDragToVelocity>
 {
 public:
     UCentipedesPNC* UComponent;
@@ -28,7 +28,7 @@ public:
 
     void Execute(int count)const 
     {
-        TRACE_CPUPROFILER_EVENT_SCOPE(TEXT("Drag"));
+        ALGO_PROFILE(TEXT("Drag"));
         for (int i = 0; i < count; ++i)
         {
             auto vel = Velocity[i].Velocity;

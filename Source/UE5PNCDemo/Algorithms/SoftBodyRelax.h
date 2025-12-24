@@ -5,7 +5,7 @@
 /// <summary>
 /// Will alter the velocity of each SoftBodyNode so they respect their length constraint.
 /// </summary>
-struct RelaxSoftBody : public PNC::Algorithm<RelaxSoftBody>
+struct RelaxSoftBody : public Ni::Algorithm<RelaxSoftBody>
 {
     UCentipedesPNC* UComponent;
     float DeltaTime;
@@ -31,7 +31,7 @@ struct RelaxSoftBody : public PNC::Algorithm<RelaxSoftBody>
 
     void Execute(int count)const 
     {
-        TRACE_CPUPROFILER_EVENT_SCOPE(TEXT("RelaxSoftBody"));
+        ALGO_PROFILE(TEXT("RelaxSoftBody"));
         // First node is the head and should not be moved by the relax algorithm
         auto previousPosition = Position[0].Position;
         for (int i = 1; i < count; ++i)

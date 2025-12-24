@@ -1,7 +1,7 @@
-// Define a few PNC components we will use with our chunks.
+// Define a few Ni components we will use with our chunks.
 #pragma once
 #include "CoreMinimal.h"
-#include "UE5PNC/public/PNCDefault.h"
+#include "UE5PNC/public/Ni.h"
 
 #include "Algorithms/CentipedeLogic.h"
 #include "Algorithms/ComputeSoftBodyInstancedMatirx.h"
@@ -14,21 +14,20 @@
 #include "Algorithms/PropagateTransform.h"
 #include "Algorithms/AnimateCentipedeLegs.h"
 
-struct CentipedePipeline : public PNC::Pipeline<CentipedePipeline>
+struct CentipedePipeline : public Ni::Pipeline<CentipedePipeline>
 {
 public:
     UCentipedesPNC* UComponent;
     float DeltaTime;
 
-    PNC::AlgorithmCacheRouter<CentipedeLogic> CentipedeLogicRouter;
-    PNC::AlgorithmCacheRouter<AddDragToVelocity> AddDragToVelocityRouter;
-    PNC::AlgorithmCacheRouter<ApplyGravityOnVelocity> ApplyGravityOnVelocityRouter;
-    PNC::AlgorithmCacheRouter<RelaxSoftBody> RelaxSoftBodyRouter;
-    PNC::AlgorithmCacheRouter<ApplyVelocityOnPosition> ApplyVelocityOnPositionRouter;
-    PNC::AlgorithmCacheRouter<ComputeSoftBodyInstancedMatirx> ComputeSoftBodyInstancedMatirxRouter;
-    PNC::AlgorithmCacheRouter<PropagateTransformFromParentChunk> PropagateTransformFromParentChunkRouter;
-    PNC::AlgorithmCacheRouter<AnimateCentipedeLegs> AnimateCentipedeLegsRouter;
-    
+    Ni::AlgorithmCacheRouter<CentipedeLogic> CentipedeLogicRouter;
+    Ni::AlgorithmCacheRouter<AddDragToVelocity> AddDragToVelocityRouter;
+    Ni::AlgorithmCacheRouter<ApplyGravityOnVelocity> ApplyGravityOnVelocityRouter;
+    Ni::AlgorithmCacheRouter<RelaxSoftBody> RelaxSoftBodyRouter;
+    Ni::AlgorithmCacheRouter<ApplyVelocityOnPosition> ApplyVelocityOnPositionRouter;
+    Ni::AlgorithmCacheRouter<ComputeSoftBodyInstancedMatirx> ComputeSoftBodyInstancedMatirxRouter;
+    Ni::AlgorithmCacheRouter<PropagateTransformFromParentChunk> PropagateTransformFromParentChunkRouter;
+    Ni::AlgorithmCacheRouter<AnimateCentipedeLegs> AnimateCentipedeLegsRouter;
     template<typename T>
     bool Requirements(T req)
     {
@@ -48,8 +47,9 @@ public:
     {
     }
 
-    void Execute(PNC::KChunkTree& chunk)
+    void Execute(Ni::KChunkTreePointer& chunk)
     {
+        
         CentipedeLogicRouter.Run(CentipedeLogic(UComponent, DeltaTime), chunk);
         CopyPreviousPosition().Run(chunk);
         int32 iLoop = 0;

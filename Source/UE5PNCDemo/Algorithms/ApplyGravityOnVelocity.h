@@ -6,7 +6,7 @@
 /// Will apply a gravity vector to the velocity of the chunk.
 /// The gravity vector given to this algorithm must be multiplied by the delta time
 /// </summary>
-struct ApplyGravityOnVelocity : public PNC::Algorithm<ApplyGravityOnVelocity>
+struct ApplyGravityOnVelocity : public Ni::Algorithm<ApplyGravityOnVelocity>
 {
     FVector DeltaGravity;
 
@@ -28,7 +28,7 @@ struct ApplyGravityOnVelocity : public PNC::Algorithm<ApplyGravityOnVelocity>
 
     void Execute(int count)const 
     {
-        TRACE_CPUPROFILER_EVENT_SCOPE(TEXT("ApplyGravityOnVelocity"));
+        ALGO_PROFILE(TEXT("ApplyGravityOnVelocity"));
         for (int i = 0; i < count; ++i)
         {
             Velocity[i].Velocity += DeltaGravity * Mass[i].Mass;
