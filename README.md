@@ -22,7 +22,7 @@ Insight trace shows 2 sets of 512 centipedes processed in a single thread:
 <img width="1137" height="321" src="https://github.com/user-attachments/assets/7023acfd-a14e-45bc-a0c9-d418928a636c" />
 
 ## Multi-thread results
-ParallelFor over 2 sets of 64 chunks of 8 centepedes each, totalling the same amount of nodes as the single-thread test case.
+ParallelFor over 2 sets of 64 chunks of 8 centipedes each, totalling the same amount of nodes as the single-thread test case.
 * first one at 665.4 us processing a total of 20,480 nodes; (6.9 time faster than single-thread)
 * and second one at 1ms processes a total of 40,960 nodes. (10 time faster than single-thread)
 
