@@ -30,6 +30,10 @@ ParallelFor over 2 sets of 64 chunks of 8 centipedes each, totalling the same am
 
 Note that the `BatchUpdateInstanceData` is part of the overhead of using Unreal's out-of-the box graphic pipeline via the component `InstancedMeshComponent`.
 
+Insight trace shows all the parallel workers executing our pipeline over all our chunks.
+
+<img width="1191" height="943" alt="image" src="https://github.com/user-attachments/assets/db1701a8-dafb-451e-8c54-2f58fbfed9da" />
+
 
 
 # Sample Code
