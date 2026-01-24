@@ -23,12 +23,19 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UInstancedStaticMeshComponent* InstancedMeshComponent;
 
-    UPROPERTY(EditAnywhere)
-    bool bSingleChunk = true;
+    //UPROPERTY(EditAnywhere)
+    //bool bSingleChunk = true;
+    //
+    //// Number of centipede chunks to create.
+    //UPROPERTY(EditAnywhere) 
+    //int32 CentipedeCount = 1;
 
-    // Number of centipede chunks to create.
-    UPROPERTY(EditAnywhere) 
-    int32 CentipedeCount = 1;
+    UPROPERTY(EditAnywhere)
+    int32 CentipedeChunkCount = 1;
+
+    UPROPERTY(EditAnywhere)
+    int32 CentipedeCountPerChunk = 1;
+
 
     // Length of a centipede chunk.
     UPROPERTY(EditAnywhere, meta = (ClampMin = "2"))
@@ -114,15 +121,13 @@ private:
 
     // Keep an array of references to all our centipede chunks
     TArray<std::reference_wrapper<Ni::KChunkTreePointer>> ChunksCentipede;
-    
+    TArray<CentipedePipeline*> CentipedeTickPipelines;
+
     // ChunkStructure for our centipede body nodes.
     const Ni::ChunkStructure* CentipedeBodyChunkStructure;
 
     // ChunkStructure for our centipede legs nodes.
     const Ni::ChunkStructure* LegChunkStructure;
-
-    // Pipeline executed on all centipede chunks during TickComponent
-    CentipedePipeline* TickPipeline;
     
 protected:
 	virtual void BeginPlay() override;

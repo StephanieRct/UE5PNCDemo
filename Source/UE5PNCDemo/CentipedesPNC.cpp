@@ -3,6 +3,7 @@
 #include "Pipelines/CentipedePipeline.h"
 #include "UE5PNC/public/PncAPI.h"
 #include "MyGameSubsystem.h"
+#include "Async/ParallelFor.h"
 
 UCentipedesPNC::UCentipedesPNC()
 {
@@ -41,17 +42,8 @@ void UCentipedesPNC::BeginPlay()
             CoCentipedeLegNode>();
 
     // Create all our centipedes
-    if (bSingleChunk)
-    {
-        CreateCentipedes(CentipedeCount);
-    }
-    else
-    {
-        for (int32 i = 0; i < CentipedeCount; ++i)
-            CreateCentipede();
-    }
-
-    TickPipeline = new CentipedePipeline(this);
+    for (int32 i = 0; i < CentipedeChunkCount; ++i)
+        CreateCentipedes(CentipedeCountPerChunk);
 
     for (int i = 0; i < RandomAllocs.Num(); ++i)
     {
@@ -79,6 +71,7 @@ Ni::KChunkTreePointer& UCentipedesPNC::CreateCentipede()
     auto segementCount = FMath::RandRange(CentipedeSegmentsMin, CentipedeSegmentsMin + CentipedeSegmentsRange);
     Ni::KChunkTree& centipedeChunk = *pnc->NewChunk(CentipedeBodyChunkStructure, segementCount);
     ChunksCentipede.Add(centipedeChunk);
+    CentipedeTickPipelines.Add( new CentipedePipeline(this));
 
     uint32 legNodesPerSegment = LegPerSegment * NodePerLeg * 2; // * 2 for left and right legs;
     uint32 totalLegNodes = segementCount * legNodesPerSegment;
@@ -117,6 +110,7 @@ Ni::KChunkTreePointer& UCentipedesPNC::CreateCentipedes(Ni::Size_t count)
     auto segementCountTotal = segementCountPerCentipete * count;
     auto& centipedeChunk = *pnc->NewChunkArray(CentipedeBodyChunkStructure, count, segementCountPerCentipete);
     ChunksCentipede.Add(centipedeChunk);
+    CentipedeTickPipelines.Add( new CentipedePipeline(this));
 
     auto legNodesPerSegment = LegPerSegment * NodePerLeg * 2; // * 2 for left and right legs;
     auto totalLegNodes = segementCountPerCentipete * legNodesPerSegment;
@@ -177,10 +171,16 @@ void UCentipedesPNC::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 
     {
         PNC_PROFILE(TEXT("Centipede Update"));
-        // Run our pipeline on all the centipede Chunks.
-        TickPipeline->DeltaTime = DeltaTime;
-        for (auto cw : ChunksCentipede)
-            TickPipeline->Run(cw.get());
+
+        // Run our pipelines on all the centipede Chunks.
+        ParallelFor(
+            ChunksCentipede.Num(),
+            [&](int32 Index)
+            {
+                CentipedeTickPipelines[Index]->DeltaTime = DeltaTime;
+                CentipedeTickPipelines[Index]->Run(ChunksCentipede[Index].get());
+            }
+        );
     }
 
     if (bRender)
@@ -215,5 +215,6 @@ void UCentipedesPNC::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 
 UCentipedesPNC::~UCentipedesPNC()
 {
-    delete TickPipeline;
+    for (auto p : CentipedeTickPipelines)
+        delete p;
 }
