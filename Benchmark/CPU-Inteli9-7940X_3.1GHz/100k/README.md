@@ -17,7 +17,7 @@
 <img width="1200" height="300" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/100k/InsightFly1000x1x100.png" />
 
 ## Chunk Count Versus Chunk Size
-<img width="1200" height="300" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/100k/ChunkCountVsSize.png" />
+<img width="600" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/100k/ChunkCountVsSize.png" />
 
 # Frame
 ## 1 chunks of 1000 centipedes
