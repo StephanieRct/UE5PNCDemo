@@ -1,9 +1,10 @@
 # Benchmark: 100,000 nodes divided by 1000 centipedes.
 ## Setup
 
-<img width="1200" height="300" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/100k/Screenshot.jpg" />
+<img width="1200" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/100k/Screenshot.jpg" />
 
 Computer:
+
 <img width="300" height="600" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/CPU-Z-CPU.png" /><img width="300" height="600" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/CPU-Z-RAM.png" /><img width="300" height="600" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/CPU-Z-GPU.png" />
 <img width="600" height="600" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/CPU-Inteli9-7940X_3.1GHz.png" />
 
