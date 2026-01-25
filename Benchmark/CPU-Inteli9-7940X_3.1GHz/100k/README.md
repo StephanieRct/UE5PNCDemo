@@ -1,5 +1,17 @@
 # Benchmark: 100,000 nodes divided by 1000 centipedes.
 ## Setup
+"Flier" centipedes structure:
+
+<img width="1200" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/100k/Flier.jpg" />
+
+* A node (aka entity) is represented by a cube instance;
+* Each centipede has 20 segments;
+* Each segment has 5 nodes: 1 body node and 4 nodes for the legs attached to the body node;
+* Each centipede has a total of 100 nodes; 
+* A centipede's body nodes follow newtonian physics with a length constraint. (Position, Velocity, Mass, Length, Parent)
+* The centipedes' legs follows a walking cycle animation in synch with the displacement of their parent body nodes; (LocalTransform, WorlTransform)
+* A centipede moves to a randomly pick position in an infinit loop;
+* There are 1000 centipedes, multiplied by 100 nodes = 100,000 nodes:
 
 <img width="1200" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/100k/Screenshot.jpg" />
 
