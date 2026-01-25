@@ -1,6 +1,6 @@
 # Benchmark: 100,000 nodes divided by 1000 centipedes.
 ## Setup
-"Flier" centipedes structure:
+"Flier" centipede structure:
 
 <img width="1200" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/100k/Flier.jpg" />
 
