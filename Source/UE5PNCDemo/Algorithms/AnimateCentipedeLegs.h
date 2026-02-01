@@ -9,7 +9,6 @@ struct AnimateCentipedeLegs : public Ni::Algorithm<AnimateCentipedeLegs>
     UCentipedesPNC* UComponent;
 
     Ni::CoSingleParentOutsideChunk* SingleParentOutsideChunk;
-    Ni::CoParentInChunk* ParentInChunk;
 
     CoLocalTransform* LocalTransform;
 
@@ -25,14 +24,17 @@ struct AnimateCentipedeLegs : public Ni::Algorithm<AnimateCentipedeLegs>
     bool Requirements(T req)
     {
         if (!req.Component(SingleParentOutsideChunk)) return false;
-        if (!req.Component(ParentInChunk)) return false;
         if (!req.Component(LocalTransform)) return false;
         if (!req.Component(CentipedeLegNode)) return false;
         if (!req.ParentComponent(ParentCentipedeBodyNode)) return false;
         return true;
     }
-
     void Execute(int count)const
+    {
+        Execute(count, false, 0);
+
+    }
+    void Execute(int count, bool useSegmentData, Size_t segmentIndexData)const
     {
         ALGO_PROFILE(TEXT("AnimateCentipedeLegs"));
         for (int32 i = 0; i < count; ++i)
@@ -44,10 +46,15 @@ struct AnimateCentipedeLegs : public Ni::Algorithm<AnimateCentipedeLegs>
             auto dist = ParentCentipedeBodyNode[segmentIndex].Displacement;
 
             legNode.Phase += dist * UComponent->LegDistanceFrequency;
+            
             legNode.Phase = FMath::Modulo(legNode.Phase, 1.0f);
+            if (legNode.Phase < 0)
+                legNode.Phase = 1 + legNode.Phase;
 
-            auto phaseWithSegment = legNode.Phase + segmentIndex * UComponent->LegSegmentFrequency;
+            auto phaseWithSegment = legNode.Phase + (useSegmentData ? segmentIndexData : segmentIndex) * UComponent->LegSegmentFrequency;
             auto phase = FMath::Modulo(phaseWithSegment, 1.0f);
+            if (phase < 0)
+                phase = 1 + legNode.Phase;
 
 
             int32 phaseStep = (int32)(phase * 4);

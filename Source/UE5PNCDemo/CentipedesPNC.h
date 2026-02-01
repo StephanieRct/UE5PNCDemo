@@ -6,10 +6,181 @@
 #include "UE5PNC/public/Ni.h"
 #include "MyGameSubsystem.h"
 
+#include "components/components.h"
+
 #include "CentipedesPNC.generated.h"
+#define OOP_PAD(x) int x[8]
+
+struct IBeginFrame
+{
+    virtual void BeginFrame(UCentipedesPNC* uComponent, float deltaTime) = 0;
+    virtual ~IBeginFrame() {}
+};
+//struct IUpdate
+//{
+//    virtual void Update(UCentipedesPNC* uComponent, float deltaTime) = 0;
+//    virtual ~IUpdate() {}
+//};
+struct IUpdatePhysics
+{
+    virtual void UpdatePhysics(UCentipedesPNC* uComponent, float deltaTime) = 0;
+    virtual ~IUpdatePhysics() {}
+};
+struct IUpdateAnimation
+{
+    virtual void UpdateAnimation(UCentipedesPNC* uComponent, float deltaTime) = 0;
+    virtual ~IUpdateAnimation() {}
+};
+struct IPropagateTransform
+{
+    virtual void PropagateTransform()=0;
+    virtual ~IPropagateTransform() {}
+};
 
 struct CentipedePipeline;
+struct FCentipede;
+struct FBodyNode;
+struct IObject
+{
+    virtual ~IObject() {}
+};
+struct FLegNode : public IObject, public IUpdateAnimation
+{
+    //FBodyNode* SingleParentOutsideChunk;
+    //FLegNode* ParentInChunk;
+    TUniquePtr<FLegNode> ChildNode;
+    OOP_PAD(Pad0);
+    CoPosition Position;
+    OOP_PAD(Pad1);
+    CoRotation Rotation;
+    OOP_PAD(Pad2);
+    CoScale Scale;
+    OOP_PAD(Pad3);
+    CoLocalTransform LocalTransform;
+    OOP_PAD(Pad4);
+    //CoFInstancedStaticMeshInstanceData FInstancedStaticMeshInstanceData;
+    CoCentipedeLegNode CentipedeLegNode;
+    OOP_PAD(Pad5);
+    FBodyNode* BodyNode;
 
+    virtual void UpdateAnimation(UCentipedesPNC* uComponent, float deltaTime) override;
+
+    uint32 GetNodeCount()const
+    {
+        if (ChildNode.Get())
+        {
+            return ChildNode->GetNodeCount() + 1;
+        }
+        return 1;
+    }
+
+
+    uint32 SetNodeTransform(FInstancedStaticMeshInstanceData* data, uint32 index)const
+    {
+        data[index++].Transform = FTransform(Rotation.Rotation, Position.Position, Scale.Scale).ToMatrixWithScale();
+        if (ChildNode.Get())
+        {
+            index = ChildNode->SetNodeTransform(data, index);
+        }
+        return index;
+    }
+
+    void SetWorldTransform(const FTransform& transform)
+    {
+        Rotation.Rotation = transform.GetRotation();
+        Position.Position = transform.GetTranslation();
+        Scale.Scale = transform.GetScale3D();
+    }
+
+    virtual void PropagateTransform(const FTransform& root);
+};
+
+struct FBodyNode : public IObject
+{
+    CoPosition Position;
+    OOP_PAD(Pad0);
+    CoPositionPrevious PositionPrevious;
+    OOP_PAD(Pad1);
+    CoRotation Rotation;
+    OOP_PAD(Pad2);
+    CoScale Scale;
+    OOP_PAD(Pad3);
+    CoVelocity Velocity;
+    OOP_PAD(Pad4);
+    CoMass Mass;
+    OOP_PAD(Pad5);
+    CoSoftBodyNode SoftBodyNode;
+    OOP_PAD(Pad6);
+    //CoFInstancedStaticMeshInstanceData InstancedStaticMeshInstanceData;
+    CoCentipedeBodyNode CentipedeBodyNode;
+    OOP_PAD(Pad7);
+    TArray<TUniquePtr<FLegNode>> RootLegNodes;
+    OOP_PAD(Pad8);
+    TUniquePtr<FBodyNode> NextBodyNode;
+    OOP_PAD(Pad9);
+
+    FBodyNode* PreviousBodyNode;
+    FCentipede* Centipede;
+    //void Update(UCentipedesPNC* uComponent, float deltaTime);
+    uint32 GetNodeCount()const
+    {
+        uint32 total = 0;
+        for (const TUniquePtr<FLegNode>& l : RootLegNodes)
+            total += l->GetNodeCount();
+        if (NextBodyNode.Get())
+            total += NextBodyNode->GetNodeCount();
+        return total + 1;
+    }
+
+    void PropagateTransform();
+
+    uint32 SetNodeTransform(FInstancedStaticMeshInstanceData* data, uint32 index)const
+    {
+        data[index++].Transform = FTransform(Rotation.Rotation, Position.Position, Scale.Scale).ToMatrixWithScale();
+        for (const TUniquePtr<FLegNode>& l : RootLegNodes)
+            index = l->SetNodeTransform(data, index);
+
+        if (NextBodyNode.Get())
+            index = NextBodyNode->SetNodeTransform(data, index);
+        return index;
+    }
+};
+
+struct FCentipede : public IObject, 
+    public IPropagateTransform,
+    public IBeginFrame,
+    public IUpdatePhysics
+    //public IUpdateAnimation
+    //public IUpdate
+{
+    virtual void Init(UCentipedesPNC* uComponent, int segmentCount);
+    virtual void BeginFrame(UCentipedesPNC* uComponent, float deltaTime);
+    virtual void UpdatePhysics(UCentipedesPNC* uComponent, float deltaTime);
+    //virtual void UpdateAnimation(UCentipedesPNC* uComponent, float deltaTime);
+    
+    
+    virtual void Update(UCentipedesPNC* uComponent, float deltaTime);
+
+
+    virtual void PropagateTransform() override
+    {
+        RootBodyNode->PropagateTransform();
+    }
+
+    uint32 GetNodeCount()const
+    {
+        return RootBodyNode->GetNodeCount();
+    }
+    uint32 SetNodeTransform(FInstancedStaticMeshInstanceData* data, uint32 index)const
+    {
+        return RootBodyNode->SetNodeTransform(data, index);
+    }
+    CoCentipede Centipede;
+    OOP_PAD(Pad0);
+    TUniquePtr<FBodyNode> RootBodyNode;
+    OOP_PAD(Pad1);
+    //TArray<TUniquePtr<FBodyNode>> BodyNodes;
+};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UE5PNCDEMO_API UCentipedesPNC : public UActorComponent
@@ -23,8 +194,23 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UInstancedStaticMeshComponent* InstancedMeshComponent;
 
-    //UPROPERTY(EditAnywhere)
-    //bool bSingleChunk = true;
+    UPROPERTY(EditAnywhere)
+    bool bUseOOP = false;
+
+    UPROPERTY(EditAnywhere)
+    bool bUseOOPVirtual = false;
+
+    UPROPERTY(EditAnywhere)
+    bool bMultithread = true;
+
+    UPROPERTY(EditAnywhere)
+    bool bRandAlloc = false;
+
+    UPROPERTY(EditAnywhere)
+    bool bUseConfigFile = false;
+
+    UPROPERTY(EditAnywhere)
+    bool bUseCommandLine = false;
     //
     //// Number of centipede chunks to create.
     //UPROPERTY(EditAnywhere) 
@@ -117,6 +303,31 @@ public:
     UPROPERTY(EditAnywhere)
     bool bRender = true;
 
+    //template<typename T>
+    //void AddObjectCallbacks(T* obj)
+    //{
+    //    if (IBeginFrame* pIBeginFrame = dynamic_cast<IBeginFrame*>(obj)) ObjectsIBeginFrame.Add(pIBeginFrame);
+    //    if (IUpdate* pIUpdate = dynamic_cast<IUpdate*>(obj)) ObjectsIUpdate.Add(pIUpdate);
+    //    if (IUpdatePhysics* pIUpdatePhysics = dynamic_cast<IUpdatePhysics*>(obj)) ObjectsIUpdatePhysics.Add(pIUpdatePhysics);
+    //    if (IUpdateAnimation* pIUpdateAnimation = dynamic_cast<IUpdateAnimation*>(obj)) ObjectsIUpdateAnimation.Add(pIUpdateAnimation);
+    //    if (IPropagateTransform* pIPropagateTransform = dynamic_cast<IPropagateTransform*>(obj)) ObjectsIPropagateTransform.Add(pIPropagateTransform);
+
+    //}
+    void AddObjectCallbacks(FCentipede* obj)
+    {
+        ObjectsIBeginFrame.Add(obj);
+        ObjectsIUpdatePhysics.Add(obj);
+        ObjectsIPropagateTransform.Add(obj);
+
+    }
+    void AddObjectCallbacks(FBodyNode* obj)
+    {
+    }
+    void AddObjectCallbacks(FLegNode* obj)
+    {
+        ObjectsIUpdateAnimation.Add(obj);
+
+    }
 private:
 
     // Keep an array of references to all our centipede chunks
@@ -129,6 +340,17 @@ private:
     // ChunkStructure for our centipede legs nodes.
     const Ni::ChunkStructure* LegChunkStructure;
     
+
+    TArray<TUniquePtr<FCentipede>> CentipedeObjects;
+    TArray<FInstancedStaticMeshInstanceData> CentipedeObjectNodeTransform;
+
+    TArray<IBeginFrame*> ObjectsIBeginFrame;
+    //TArray<IUpdate*> ObjectsIUpdate;
+    TArray<IUpdatePhysics*> ObjectsIUpdatePhysics;
+    TArray<IUpdateAnimation*> ObjectsIUpdateAnimation;
+    TArray<IPropagateTransform*> ObjectsIPropagateTransform;
+
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -148,8 +370,12 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
     // Create a centipede chunk.
-    Ni::KChunkTreePointer& CreateCentipede();
+    //Ni::KChunkTreePointer& CreateCentipede();
 
     // Create a centipede chunk.
-    Ni::KChunkTreePointer& CreateCentipedes(Ni::Size_t count);
+    void CreateCentipedes(Ni::Size_t count);
+
+    void DoRandomAlloc();
 };
+
+

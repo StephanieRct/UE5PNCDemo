@@ -16,7 +16,7 @@ public:
     { 
     }
 
-protected:
+public:
     Ni::CoParentInChunk* ParentInChunk;
     CoLocalTransform* LocalTransform;
     CoPosition* Position;
@@ -69,7 +69,7 @@ public:
 
 struct PropagateTransformFromParentChunk : public Ni::Algorithm<PropagateTransformFromParentChunk>
 {
-protected:
+public:
     PropagateTransformInChunk Base;
     Ni::CoSingleParentOutsideChunk* SingleParentOutsideChunk;
     CoPosition* ParentPosition;
@@ -101,7 +101,7 @@ public:
 
 struct CopyPreviousPosition : public Ni::Algorithm<CopyPreviousPosition>
 {
-protected:
+public:
     CoPosition* Position;
     CoPositionPrevious* PositionPrevious;
 

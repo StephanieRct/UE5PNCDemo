@@ -54,7 +54,7 @@ public:
         CopyPreviousPosition().Run(chunk);
         int32 iLoop = 0;
         auto dt = DeltaTime;
-        while (dt > 0)
+        //while (dt > 0)
         {
             auto stepDeltaTime = FMath::Min(dt, UComponent->MaxDeltaTimeStep);
             dt -= stepDeltaTime;
