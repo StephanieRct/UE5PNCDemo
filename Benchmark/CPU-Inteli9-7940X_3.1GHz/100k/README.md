@@ -33,13 +33,6 @@ Computer:
 ## 1000 chunks of 1 centipede: 2.54ms median
 <img width="1200" height="300" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/100k/InsightFly1000x1x100.png" />
 
-## 10000 chunks of 1 mini centipede (10 nodes instead of 100) : 4.15ms median
-<img width="1200" height="300" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/100k/InsightFly10000x1x10.png" />
-
-10,000 Mini flying centipedes:
-
-<img width="1200" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/100k/ScreenshotMini.jpg" />
-
 ## Chunk Count Versus Chunk Size
 <img width="600" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/100k/ChunkCountVsSize.png" />
 
@@ -55,6 +48,3 @@ Computer:
 
 ## 1000 chunks of 1 centipedes
 <img width="1200" height="300" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/100k/InsightFly1000x1x100-Frame.png" />
-
-## 10000 chunks of 1 mini centipede
-<img width="1200" height="300" src="https://github.com/StephanieRct/UE5PNCDemo/blob/main/Benchmark/CPU-Inteli9-7940X_3.1GHz/100k/InsightFly10000x1x10-Frame.png" />
